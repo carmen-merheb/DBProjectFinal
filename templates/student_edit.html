@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Student Information</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #e0e7ff, #f4f4f9);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 700px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        form fieldset {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+
+        form legend {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0056b3;
+            padding: 0 10px;
+        }
+
+        form label {
+            margin-top: 10px;
+            font-weight: 500;
+            color: #555;
+            display: block;
+        }
+
+        form input, form select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #fdfdfd;
+        }
+
+        form input:focus, form select:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 6px rgba(0, 86, 179, 0.3);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            border: none;
+            border-radius: 8px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #004494, #003070);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 86, 179, 0.3);
+        }
+
+        .flash-container {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Your Information</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message|safe }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form action="{{ url_for('student_edit') }}" method="POST" enctype="multipart/form-data">
+            <!-- Personal Information -->
+            <fieldset>
+                <legend>Personal Information</legend>
+                <label for="fullName">Full Name:</label>
+                <input type="text" id="fullName" name="fullName" value="{{ student.fullName }}" required>
+
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" value="{{ student.phoneNumber }}">
+
+                <label for="birthDate">Birth Date:</label>
+                <input type="date" id="birthDate" name="birthDate" value="{{ student.birthDate }}" required>
+
+                <label for="universityID">University:</label>
+                <select id="universityID" name="universityID" required>
+                    {% for university in universities %}
+                        <option value="{{ university.universityID }}" {% if university.universityID == student.universityID %}selected{% endif %}>
+                            {{ university.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="dateOfEnrollment">Date of Enrollment:</label>
+                <input type="date" id="dateOfEnrollment" name="dateOfEnrollment" value="{{ dateOfEnrollment }}">
+            </fieldset>
+
+            <!-- Major Information -->
+            <fieldset>
+                <legend>Major Information</legend>
+                <label for="majorID">Major:</label>
+                <select id="majorID" name="majorID" required>
+                    {% for major in majors %}
+                        <option value="{{ major.majorID }}" {% if major.majorID == major_info.majorID %}selected{% endif %}>
+                            {{ major.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" name="startDate" value="{{ major_info.startDate }}">
+
+                <label for="graduationDate">Graduation Date:</label>
+                <input type="date" id="graduationDate" name="graduationDate" value="{{ major_info.graduationDate }}">
+
+                <label for="yearOfStudy">Year of Study:</label>
+                <input type="number" id="yearOfStudy" name="yearOfStudy" value="{{ major_info.yearOfStudy }}" min="1">
+
+                <label for="CGPA">CGPA:</label>
+                <input type="number" id="CGPA" name="CGPA" step="0.01" value="{{ major_info.CGPA }}" min="0" max="4">
+            </fieldset>
+
+            <!-- Resume Upload -->
+            <fieldset>
+                <legend>Upload Resume</legend>
+                <label for="resume">Resume (PDF, DOC, DOCX only):</label>
+                <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx">
+            </fieldset>
+
+            <!-- Submit Button -->
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+</body>
+</html>

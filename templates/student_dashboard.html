@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #e0e7ff, #f4f4f9);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 80px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .info-box {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            background-color: #f9f9f9;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-box h2 {
+            font-size: 1.5rem;
+            color: #444;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .info-box p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 1rem;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        ul li {
+            margin: 10px 0;
+            font-size: 1rem;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .button {
+            padding: 12px 25px;
+            text-decoration: none;
+            font-size: 1rem;
+            border-radius: 8px;
+            color: #fff;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+        }
+
+        .button:hover {
+            background: linear-gradient(135deg, #0056b3, #003d82);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 86, 179, 0.3);
+        }
+
+        .button-secondary {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+        }
+
+        .button-secondary:hover {
+            background: linear-gradient(135deg, #5a6268, #494e52);
+        }
+
+        .status-accepted {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .status-rejected {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .flash-container {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Student Dashboard</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message|safe }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <div class="info-box">
+            <h2>Your Information</h2>
+            <p><strong>Name:</strong> {{ student.fullName }}</p>
+            <p><strong>Email:</strong> {{ student.email }}</p>
+            <p><strong>Phone Number:</strong> {{ student.phoneNumber }}</p>
+            
+            <p><strong>University:</strong> {{ student.universityName }}</p>
+            <p><strong>Date of Enrollment:</strong> {{ student.dateOfEnrollment }}</p>
+        </div>
+        <div class="info-box">
+            <h2>Major Information</h2>
+            {% if major_info %}
+                <p><strong>Major:</strong> {{ major_info.majorName }}</p>
+                <p><strong>Start Date:</strong> {{ major_info.startDate }}</p>
+                <p><strong>Expected Graduation Date:</strong> {{ major_info.graduationDate }}</p>
+                <p><strong>Year of Study:</strong> {{ major_info.yearOfStudy }}</p>
+                <p><strong>CGPA:</strong> {{ major_info.CGPA }}</p>
+            {% else %}
+                <p>No major information available.</p>
+            {% endif %}
+        </div>
+        <div class="info-box">
+            <h2>Internship Applications</h2>
+            {% if internships %}
+                <ul>
+                    {% for internship in internships %}
+                    <li>
+                        <strong>{{ internship.title }}</strong>
+                        <br>
+                        Location: {{ internship.location }} | Start: {{ internship.startDate }} | End: {{ internship.endDate }}
+                        <br>
+                        Status: 
+                        {% if internship.status == 'Accepted' %}
+                        <span class="status-accepted">{{ internship.status }}</span>
+                        {% elif internship.status == 'Rejected' %}
+                        <span class="status-rejected">{{ internship.status }}</span>
+                        {% else %}
+                        <span class="status-pending">{{ internship.status }}</span>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>You haven't applied to any internships yet.</p>
+            {% endif %}
+        </div>
+        <div class="buttons">
+            <a href="{{ url_for('student_edit') }}" class="button">Edit Profile</a>
+            <a href="{{ url_for('internship_listings') }}" class="button button-secondary">View Internship Listings</a>
+        </div>
+    </div>
+</body>
+</html>

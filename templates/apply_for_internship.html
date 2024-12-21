@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply for Internship</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #e3f2fd, #e0f7fa);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+
+        h1, h3 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .info-box {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-box p {
+            margin: 8px 0;
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        a.btn, button {
+            text-decoration: none;
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: 8px;
+            color: #fff;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        a.btn:hover, button:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #e0a800, #c69500);
+            box-shadow: 0 4px 10px rgba(255, 193, 7, 0.2);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #218838);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268, #4e5458);
+            box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2);
+        }
+
+        .flash-container {
+            margin-bottom: 20px;
+        }
+
+        .flash {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .flash.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .flash.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Apply for Internship</h1>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message|safe }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Internship Details -->
+        <div class="info-box">
+            <h3>Internship Details</h3>
+            <p><strong>Title:</strong> {{ internship['title'] }}</p>
+        </div>
+        <hr>
+
+        <!-- Student Information -->
+        <div class="info-box">
+            <h3>Your Information</h3>
+            <p><strong>Full Name:</strong> {{ student['fullName'] }}</p>
+            <p><strong>Email:</strong> {{ student['email'] }}</p>
+            <p><strong>Phone Number:</strong> {{ student['phoneNumber'] }}</p>
+            <p><strong>Birth Date:</strong> {{ student['birthDate'] }}</p>
+            <p><strong>Date of Enrollment:</strong> {{ student['dateOfEnrollment'] }}</p>
+            <a href="{{ url_for('student_edit') }}" class="btn btn-warning">Edit Your Information</a>
+        </div>
+        <hr>
+
+        <!-- Application Confirmation -->
+        <div class="info-box">
+            <h3>Confirm Your Application</h3>
+            <form action="{{ url_for('apply_for_internship', internship_id=internship['internshipID']) }}" method="POST">
+                <button type="submit" class="btn btn-success">Confirm and Apply</button>
+            </form>
+            <a href="{{ url_for('internship_details', internship_id=internship['internshipID']) }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </div>
+</body>
+</html>

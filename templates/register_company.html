@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Registration</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0e7ff, #f4f4f9);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        label {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        button {
+            background-color: #0056b3;
+            color: #ffffff;
+            font-size: 18px;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #003d82;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .flash-container {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .alert.alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Company Registration</h1>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message|safe }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Registration Form -->
+        <form action="{{ url_for('signup_company') }}" method="POST">
+            <label for="companyName">Company Name:</label>
+            <input type="text" id="companyName" name="companyName" required placeholder="Enter your company name">
+
+            <label for="phoneNumber">Phone Number:</label>
+            <input type="text" id="phoneNumber" name="phoneNumber" required placeholder="Enter your phone number">
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email address">
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required placeholder="Create a password">
+
+            <label for="industry">Industry:</label>
+            <select id="industry" name="industry" required>
+                <option value="" disabled selected>Select an industry</option>
+                <option value="Technology" {% if company and company.industry == 'Technology' %}selected{% endif %}>Technology</option>
+                <option value="Healthcare" {% if company and company.industry == 'Healthcare' %}selected{% endif %}>Healthcare</option>
+                <option value="Finance" {% if company and company.industry == 'Finance' %}selected{% endif %}>Finance</option>
+                <option value="Education" {% if company and company.industry == 'Education' %}selected{% endif %}>Education</option>
+                <option value="Manufacturing" {% if company and company.industry == 'Manufacturing' %}selected{% endif %}>Manufacturing</option>
+                <option value="Retail" {% if company and company.industry == 'Retail' %}selected{% endif %}>Retail</option>
+                <option value="Hospitality" {% if company and company.industry == 'Hospitality' %}selected{% endif %}>Hospitality</option>
+                <option value="Marketing" {% if company and company.industry == 'Marketing' %}selected{% endif %}>Marketing</option>
+                <option value="Logistics" {% if company and company.industry == 'Logistics' %}selected{% endif %}>Logistics</option>
+                <option value="Construction" {% if company and company.industry == 'Construction' %}selected{% endif %}>Construction</option>
+            </select>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>

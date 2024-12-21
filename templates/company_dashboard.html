@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Company Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-4 mb-4 text-center" style="color: #0056b3; font-weight: bold;">Welcome to Your Dashboard, {{ company_name }}</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container mb-4">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}" style="padding: 12px; border-radius: 8px; font-size: 16px;">{{ message|safe }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="dashboard-header mb-4 text-center">
+        <a href="{{ url_for('post_internship') }}" class="btn btn-primary shadow-sm" style="margin-right: 10px; padding: 15px 25px; font-size: 16px; border-radius: 8px; background: linear-gradient(135deg, #007bff, #0056b3); border: none; color: white; transition: all 0.3s;">Post New Internship</a>
+        <a href="{{ url_for('add_company_contact') }}" class="btn btn-primary shadow-sm" style="padding: 15px 25px; font-size: 16px; border-radius: 8px; background: linear-gradient(135deg, #007bff, #0056b3); border: none; color: white; transition: all 0.3s;">Add a Company Contact</a>
+    </div>
+
+    <div class="dashboard-stats row text-center mb-4">
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm" style="border-radius: 12px; border: none; background: linear-gradient(135deg, #e0e7ff, #f4f4f9);">
+                <h2 style="color: #0056b3; font-size: 2rem;">{{ total_internships }}</h2>
+                <p style="color: #555;">Total Internships Posted</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm" style="border-radius: 12px; border: none; background: linear-gradient(135deg, #e0e7ff, #f4f4f9);">
+                <h2 style="color: #0056b3; font-size: 2rem;">{{ total_applications }}</h2>
+                <p style="color: #555;">Total Applications Received</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm" style="border-radius: 12px; border: none; background: linear-gradient(135deg, #e0e7ff, #f4f4f9);">
+                <h2 style="color: #0056b3; font-size: 2rem;">{{ active_internships }}</h2>
+                <p style="color: #555;">Active Internships</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="recent-activity mb-4">
+        <h3 style="color: #0056b3; font-weight: bold;">Recent Internships</h3>
+        <ul class="list-group mt-3" style="border-radius: 8px;">
+            {% for internship in recent_internships %}
+            <li class="list-group-item" style="border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px;">
+                <strong>{{ internship['title'] }}</strong> - Posted on {{ internship['startDate'].strftime('%B %d, %Y') }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Internship Table -->
+    <div class="table-responsive">
+        <h3 class="mt-4" style="color: #0056b3; font-weight: bold;">All Internships</h3>
+        <table class="table table-striped table-bordered mt-3" style="border-radius: 12px; overflow: hidden; background-color: white; box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);">
+            <thead class="thead-light" style="background: linear-gradient(135deg, #e0e7ff, #f4f4f9);">
+                <tr style="color: #0056b3; font-weight: bold;">
+                    <th>Title</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Applications</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for internship in internships %}
+                <tr style="color: #555;">
+                    <td>{{ internship['title'] }}</td>
+                    <td>{{ internship['startDate'] }}</td>
+                    <td>{{ internship['endDate'] }}</td>
+                    <td>{{ 'Active' if internship['endDate'] >= date.today() else 'Closed' }}</td>
+                    <td>{{ internship['applications'] }}</td>
+                    <td>
+                        <a href="{{ url_for('view_applications', internship_id=internship['internshipID']) }}" class="btn btn-primary btn-sm shadow-sm" style="margin-right: 5px; border-radius: 6px;">View Applications</a>
+                        <a href="{{ url_for('edit_internship', internship_id=internship['internshipID']) }}" class="btn btn-warning btn-sm shadow-sm" style="margin-right: 5px; border-radius: 6px;">Edit</a>
+                        <form action="{{ url_for('delete_internship', internship_id=internship['internshipID']) }}" method="POST" style="display: inline;">
+                            <button type="submit" class="btn btn-danger btn-sm shadow-sm" style="border-radius: 6px;" onclick="return confirm('Are you sure you want to delete this internship?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

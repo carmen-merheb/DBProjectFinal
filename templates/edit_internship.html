@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Internship</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            background: #ffffff;
+            color: #333;
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            padding: 30px 40px;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        form label {
+            font-weight: bold;
+            margin-top: 15px;
+            color: #555;
+        }
+        form input, form select, form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #f9f9f9;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        form input:focus, form select:focus, form textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+        form textarea {
+            resize: none;
+        }
+        form .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+        form .checkbox-container label {
+            margin-left: 10px;
+            font-weight: normal;
+            color: #555;
+        }
+        button {
+            width: 100%;
+            margin-top: 30px;
+            padding: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        button:hover {
+            background: linear-gradient(135deg, #0056b3, #004494);
+        }
+        .flash-container {
+            margin-bottom: 20px;
+        }
+        .flash {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-edit"></i> Edit Internship</h1>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message|safe }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Form -->
+        <form action="{{ url_for('edit_internship', internship_id=internship['internshipID']) }}" method="POST">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" value="{{ internship['title'] }}" required>
+
+            <label for="deadlineDate">Deadline Date:</label>
+            <input type="date" id="deadlineDate" name="deadlineDate" value="{{ internship['deadlineDate'] }}" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" required>{{ internship['description'] }}</textarea>
+
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate" value="{{ internship['startDate'] }}" required>
+
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate" value="{{ internship['endDate'] }}" required>
+
+            <label for="salary">Salary:</label>
+            <input type="number" id="salary" name="salary" value="{{ internship['salary'] }}" step="0.01" required>
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" value="{{ internship['location'] }}" required>
+
+            <label for="field">Field:</label>
+            <select id="field" name="field" required>
+                <option value="Engineering" {% if internship['field'] == 'Engineering' %}selected{% endif %}>Engineering</option>
+                <option value="Business" {% if internship['field'] == 'Business' %}selected{% endif %}>Business</option>
+                <option value="Marketing" {% if internship['field'] == 'Marketing' %}selected{% endif %}>Marketing</option>
+                <option value="Sales" {% if internship['field'] == 'Sales' %}selected{% endif %}>Sales</option>
+                <option value="Technology" {% if internship['field'] == 'Technology' %}selected{% endif %}>Technology</option>
+                <option value="Healthcare" {% if internship['field'] == 'Healthcare' %}selected{% endif %}>Healthcare</option>
+            </select>
+
+            <div class="checkbox-container">
+                <input type="checkbox" id="isRemote" name="isRemote" {% if internship['isRemote'] %}checked{% endif %}>
+                <label for="isRemote">Is this a Remote Internship?</label>
+            </div>
+
+            <button type="submit"><i class="fas fa-save"></i> Update Internship</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
